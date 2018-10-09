@@ -19,12 +19,15 @@ const browserSync = require('browser-sync').create();
 //     "postcss": "^7.0.5",
 //     "postcss-preset-env": "^6.0.10"
 
-gulp.task('browser-sync', function() {
+gulp.task('serve', ['styles', 'js'], function() {
   browserSync.init({
     server: {
       baseDir: './app',
     },
   });
+
+  gulp.watch('app/**/*.scss', ['styles']);
+  gulp.watch('app/js/*.js', ['js']);
 });
 
 // Deal with HTML files
@@ -44,12 +47,16 @@ gulp.task('styles', function() {
         }),
       ])
     )
-    .pipe(gulp.dest('dist/styles'));
+    .pipe(gulp.dest('dist/styles'))
+    .pipe(browserSync.stream());
 });
 
 // Deal with JavaScript files
 gulp.task('js', function() {
-  return gulp.src('app/js/*.js').pipe(gulp.dest('dist/js'));
+  return gulp
+    .src('app/js/*.js')
+    .pipe(gulp.dest('dist/js'))
+    .pipe(browserSync.stream());
 });
 
 // Default task to run all other tasks
