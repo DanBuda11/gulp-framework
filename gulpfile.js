@@ -1,62 +1,83 @@
 const gulp = require('gulp');
 const postcss = require('gulp-postcss');
+// Compile SCSS to CSS
 const sass = require('gulp-sass');
+// Automatically add any browser prefixes to CSS
 const autoprefixer = require('autoprefixer');
+// Run a local server
 const browserSync = require('browser-sync').create();
-
+// Convert .pug to HTML
+const pug = require('gulp-pug');
 // npm uninstall any unused packages (probably csswring)
 
-// postcss will definitely be used
 // csswring and gulp-clean-css are both css minifiers
-// gulp-sass is used for compiling scss to css
 // postcss-preset-env is like Babel for css
 
-// "autoprefixer": "^9.1.5",
-//     "csswring": "^7.0.0",
-//     "gulp": "^3.9.1",
-//     "gulp-clean-css": "^3.10.0",
-//     "gulp-sass": "^4.0.1",
-//     "postcss": "^7.0.5",
-//     "postcss-preset-env": "^6.0.10"
+// *** FILE TASKS
 
+// Build .pug files to the dist folder as HTML
+gulp.task('pug', function() {
+  return gulp
+    .src('app/views/*.pug')
+    .pipe(pug({}))
+    .pipe(gulp.dest('dist'))
+    .pipe(browserSync.stream());
+});
+
+// Build HTML files to dist folder
+gulp.task('html', function() {
+  return gulp
+    .src('app/*.html')
+    .pipe(gulp.dest('dist'))
+    .pipe(browserSync.stream());
+});
+
+// Build SCSS files to CSS files in dist folder
+gulp.task('styles', function() {
+  return (
+    gulp
+      .src('app/styles/*.scss')
+      // Compile SCSS to CSS
+      .pipe(sass())
+      .pipe(
+        postcss([
+          // Add browser prefixes
+          autoprefixer({
+            browsers: ['last 2 versions'],
+          }),
+        ])
+      )
+      // Send compiled CSS to dist folder
+      .pipe(gulp.dest('dist/styles'))
+      // Hot reloading for browser-sync
+      .pipe(browserSync.stream())
+  );
+});
+
+// Compiles JS files to dist folder
+gulp.task('js', function() {
+  return (
+    gulp
+      .src('app/js/*.js')
+      .pipe(gulp.dest('dist/js'))
+      // Hot reloading for browser-sync
+      .pipe(browserSync.stream())
+  );
+});
+
+// Boot up browser-sync server
 gulp.task('serve', ['styles', 'js'], function() {
   browserSync.init({
     server: {
-      baseDir: './app',
+      baseDir: './dist',
     },
   });
 
-  gulp.watch('app/**/*.scss', ['styles']);
+  // Watch for file changes
+  gulp.watch('app/*.html', ['html']);
+  // gulp.watch('app/views/*.pug', ['pug']);
+  gulp.watch('app/styles/*.scss', ['styles']);
   gulp.watch('app/js/*.js', ['js']);
-});
-
-// Deal with HTML files
-gulp.task('html', function() {
-  return gulp.src('app/**/*.html').pipe(gulp.dest('dist'));
-});
-
-// Deal with SCSS files
-gulp.task('styles', function() {
-  return gulp
-    .src('app/styles/*.scss')
-    .pipe(sass())
-    .pipe(
-      postcss([
-        autoprefixer({
-          browsers: ['last 2 versions'],
-        }),
-      ])
-    )
-    .pipe(gulp.dest('dist/styles'))
-    .pipe(browserSync.stream());
-});
-
-// Deal with JavaScript files
-gulp.task('js', function() {
-  return gulp
-    .src('app/js/*.js')
-    .pipe(gulp.dest('dist/js'))
-    .pipe(browserSync.stream());
 });
 
 // Default task to run all other tasks
