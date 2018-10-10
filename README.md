@@ -1,6 +1,6 @@
 # Dan Buda's Gulp Framework
 
-<kbd>![Image](gulp.png)</kbd>
+<kbd>![Image](gulpframework.png)</kbd>
 
 A simple Gulp framework for front-end projects using HTML, Sass and Vanilla JavaScript.
 
