@@ -14,17 +14,16 @@ const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 // Minimize images
 const imagemin = require('gulp-imagemin');
-
-// npm uninstall any unused packages (probably csswring)
-// csswring and gulp-clean-css are both css minifiers
-// postcss-preset-env is like Babel for css
+// Only deal with files that have changed since the last run
+const changed = require('gulp-changed');
 
 // *** FILE TASKS
 
 // Build HTML files to dist folder
 gulp.task('html', function() {
   return gulp
-    .src('app/*.html')
+    .src('src/*.{html,ico}')
+    .pipe(changed('dist'))
     .pipe(gulp.dest('dist'))
     .pipe(browserSync.stream());
 });
@@ -33,7 +32,8 @@ gulp.task('html', function() {
 gulp.task('styles', function() {
   return (
     gulp
-      .src('app/styles/*.scss')
+      .src('src/styles/*.scss')
+      .pipe(changed('dist/styles'))
       // Compile SCSS to CSS
       .pipe(sass())
       .pipe(
@@ -57,7 +57,8 @@ gulp.task('styles', function() {
 gulp.task('js', function() {
   return (
     gulp
-      .src('app/js/*.js')
+      .src('src/js/*.js')
+      .pipe(changed('dist/js'))
       .pipe(
         babel({
           presets: ['@babel/env'],
@@ -73,25 +74,28 @@ gulp.task('js', function() {
 // Minify images and send to dist folder
 gulp.task('images', function() {
   return gulp
-    .src('app/images/*')
+    .src('src/images/*.{png,gif,jpg,jpeg}')
+    .pipe(changed('dist/images'))
     .pipe(imagemin())
     .pipe(gulp.dest('dist/images'));
 });
 
 // *** SERVER TASK
 
-// Boot up browser-sync server and run all file tasks
+// Boot up browser-sync server and hot reload when files change
 gulp.task('serve', ['html', 'styles', 'js', 'images'], function() {
   browserSync.init({
+    port: 8080,
     server: {
       baseDir: './dist',
     },
   });
 
   // Watch for file changes
-  gulp.watch('app/*.html', ['html']);
-  gulp.watch('app/styles/*.scss', ['styles']);
-  gulp.watch('app/js/*.js', ['js']);
+  gulp.watch('src/*.{html,ico}', ['html']);
+  gulp.watch('src/styles/*.scss', ['styles']);
+  gulp.watch('src/js/*.js', ['js']);
+  gulp.watch('src/images/*.{png,gif,jpg,jpeg', ['images']);
 });
 
 // *** RUN FILE TASKS WITHOUT SERVER

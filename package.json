@@ -1,13 +1,17 @@
 {
   "name": "gulp-framework",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple Gulp Framework with Sass",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dan Buda",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danbuda11/gulp-framework"
+  },
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.1.2",
@@ -16,6 +20,7 @@
     "browser-sync": "^2.26.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
+    "gulp-changed": "^3.2.0",
     "gulp-clean-css": "^3.10.0",
     "gulp-imagemin": "^4.1.0",
     "gulp-postcss": "^8.0.0",
