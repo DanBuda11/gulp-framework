@@ -6,23 +6,20 @@ const sass = require('gulp-sass');
 const autoprefixer = require('autoprefixer');
 // Run a local server
 const browserSync = require('browser-sync').create();
-// Convert .pug to HTML
-const pug = require('gulp-pug');
-// npm uninstall any unused packages (probably csswring)
+// For minifying CSS
+const cleanCSS = require('gulp-clean-css');
+// Babel for JS
+const babel = require('gulp-babel');
+// Minimize JS
+const uglify = require('gulp-uglify');
+// Minimize images
+const imagemin = require('gulp-imagemin');
 
+// npm uninstall any unused packages (probably csswring)
 // csswring and gulp-clean-css are both css minifiers
 // postcss-preset-env is like Babel for css
 
 // *** FILE TASKS
-
-// Build .pug files to the dist folder as HTML
-gulp.task('pug', function() {
-  return gulp
-    .src('app/views/*.pug')
-    .pipe(pug({}))
-    .pipe(gulp.dest('dist'))
-    .pipe(browserSync.stream());
-});
 
 // Build HTML files to dist folder
 gulp.task('html', function() {
@@ -47,6 +44,8 @@ gulp.task('styles', function() {
           }),
         ])
       )
+      // minify CSS
+      .pipe(cleanCSS({}))
       // Send compiled CSS to dist folder
       .pipe(gulp.dest('dist/styles'))
       // Hot reloading for browser-sync
@@ -59,14 +58,30 @@ gulp.task('js', function() {
   return (
     gulp
       .src('app/js/*.js')
+      .pipe(
+        babel({
+          presets: ['@babel/env'],
+        })
+      )
+      .pipe(uglify())
       .pipe(gulp.dest('dist/js'))
       // Hot reloading for browser-sync
       .pipe(browserSync.stream())
   );
 });
 
-// Boot up browser-sync server
-gulp.task('serve', ['styles', 'js'], function() {
+// Minify images and send to dist folder
+gulp.task('images', function() {
+  return gulp
+    .src('app/images/*')
+    .pipe(imagemin())
+    .pipe(gulp.dest('dist/images'));
+});
+
+// *** SERVER TASK
+
+// Boot up browser-sync server and run all file tasks
+gulp.task('serve', ['html', 'styles', 'js', 'images'], function() {
   browserSync.init({
     server: {
       baseDir: './dist',
@@ -75,17 +90,11 @@ gulp.task('serve', ['styles', 'js'], function() {
 
   // Watch for file changes
   gulp.watch('app/*.html', ['html']);
-  // gulp.watch('app/views/*.pug', ['pug']);
   gulp.watch('app/styles/*.scss', ['styles']);
   gulp.watch('app/js/*.js', ['js']);
 });
 
-// Default task to run all other tasks
-gulp.task('default', ['html', 'styles', 'js']);
+// *** RUN FILE TASKS WITHOUT SERVER
 
-// Watch task for changes to any HTML, SCSS, JS files
-gulp.task('watch', function() {
-  gulp.watch('app/**/*.html', ['html']);
-  gulp.watch('app/**/*.scss', ['styles']);
-  gulp.watch('app/js/*.js', ['js']);
-});
+// Default task to run all file tasks
+gulp.task('default', ['html', 'styles', 'js', 'images']);
