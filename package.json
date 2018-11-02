@@ -13,6 +13,11 @@
     "url": "https://github.com/danbuda11/gulp-framework"
   },
   "license": "ISC",
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "not dead"
+  ],
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",

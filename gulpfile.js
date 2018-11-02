@@ -19,10 +19,10 @@ const changed = require('gulp-changed');
 
 // *** FILE TASKS
 
-// Build HTML files to dist folder
-gulp.task('html', function() {
+// Port root directory files to dist folder (index.html & favicon package files)
+gulp.task('root', function() {
   return gulp
-    .src('src/*.{html,ico}')
+    .src('src/*.{html,ico,png,xml,svg,webmanifest}')
     .pipe(changed('dist'))
     .pipe(gulp.dest('dist'))
     .pipe(browserSync.stream());
@@ -39,9 +39,7 @@ gulp.task('styles', function() {
       .pipe(
         postcss([
           // Add browser prefixes
-          autoprefixer({
-            browsers: ['last 2 versions'],
-          }),
+          autoprefixer({}),
         ])
       )
       // minify CSS
@@ -83,7 +81,7 @@ gulp.task('images', function() {
 // *** SERVER TASK
 
 // Boot up browser-sync server and hot reload when files change
-gulp.task('serve', ['html', 'styles', 'js', 'images'], function() {
+gulp.task('serve', ['root', 'styles', 'js', 'images'], function() {
   browserSync.init({
     port: 8080,
     server: {
@@ -92,7 +90,7 @@ gulp.task('serve', ['html', 'styles', 'js', 'images'], function() {
   });
 
   // Watch for file changes
-  gulp.watch('src/*.{html,ico}', ['html']);
+  gulp.watch('src/*.{html,ico,png,xml,svg,webmanifest}', ['html']);
   gulp.watch('src/styles/*.scss', ['styles']);
   gulp.watch('src/js/*.js', ['js']);
   gulp.watch('src/images/*.{png,gif,jpg,jpeg', ['images']);
@@ -101,4 +99,4 @@ gulp.task('serve', ['html', 'styles', 'js', 'images'], function() {
 // *** RUN FILE TASKS WITHOUT SERVER
 
 // Default task to run all file tasks
-gulp.task('default', ['html', 'styles', 'js', 'images']);
+gulp.task('default', ['root', 'styles', 'js', 'images']);
