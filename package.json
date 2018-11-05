@@ -30,6 +30,7 @@
     "gulp-imagemin": "^4.1.0",
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.1",
+    "gulp-size": "^3.0.0",
     "gulp-uglify": "^3.0.1",
     "postcss": "^7.0.5"
   }

@@ -16,6 +16,7 @@ const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 // Only deal with files that have changed since the last run
 const changed = require('gulp-changed');
+const size = require('gulp-size');
 
 // *** FILE TASKS
 
@@ -63,6 +64,7 @@ gulp.task('js', function() {
         })
       )
       .pipe(uglify())
+      .pipe(size({ showFiles: true }))
       .pipe(gulp.dest('dist/js'))
       // Hot reloading for browser-sync
       .pipe(browserSync.stream())
@@ -72,7 +74,7 @@ gulp.task('js', function() {
 // Minify images and send to dist folder
 gulp.task('images', function() {
   return gulp
-    .src('src/images/*.{png,gif,jpg,jpeg}')
+    .src('src/images/*.{png,gif,jpg,jpeg.svg}')
     .pipe(changed('dist/images'))
     .pipe(imagemin())
     .pipe(gulp.dest('dist/images'));
@@ -93,7 +95,7 @@ gulp.task('serve', ['root', 'styles', 'js', 'images'], function() {
   gulp.watch('src/*.{html,ico,png,xml,svg,webmanifest}', ['html']);
   gulp.watch('src/styles/*.scss', ['styles']);
   gulp.watch('src/js/*.js', ['js']);
-  gulp.watch('src/images/*.{png,gif,jpg,jpeg', ['images']);
+  gulp.watch('src/images/*.{png,gif,jpg,jpeg,svg', ['images']);
 });
 
 // *** RUN FILE TASKS WITHOUT SERVER
