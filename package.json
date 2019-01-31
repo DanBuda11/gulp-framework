@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Simple Gulp Framework with Sass",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "Dan Buda",
   "repository": {
@@ -14,24 +12,27 @@
   },
   "license": "ISC",
   "browserslist": [
-    "last 1 version",
-    "> 1%",
-    "not dead"
+    "> 0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "autoprefixer": "^9.1.5",
-    "browser-sync": "^2.26.0",
-    "gulp": "^3.9.1",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "autoprefixer": "^9.4.7",
+    "browser-sync": "^2.26.3",
+    "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
     "gulp-changed": "^3.2.0",
-    "gulp-clean-css": "^3.10.0",
-    "gulp-imagemin": "^4.1.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-imagemin": "^5.0.3",
     "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^4.0.1",
+    "gulp-sass": "^4.0.2",
     "gulp-size": "^3.0.0",
+    "gulp-strip-comments": "^2.5.2",
     "gulp-uglify": "^3.0.1",
-    "postcss": "^7.0.5"
+    "postcss": "^7.0.14"
   }
 }
