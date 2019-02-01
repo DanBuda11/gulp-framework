@@ -14,13 +14,14 @@
 // Cache busting with hashed file names
 
 // Imports
-const { src, dest, series, parallel } = require('gulp');
-const clean = require('gulp-clean');
-const sass = require('gulp-sass');
-const cleanCSS = require('gulp-clean-css');
-const postCSS = require('gulp-postcss');
-const stripComments = require('gulp-strip-comments');
-const babel = require('gulp-babel');
+const { src, dest, series, parallel, watch } = require('gulp'),
+  sass = require('gulp-sass'),
+  del = require('del'),
+  cleanCSS = require('gulp-clean-css'),
+  postCSS = require('gulp-postcss'),
+  stripComments = require('gulp-strip-comments'),
+  babel = require('gulp-babel'),
+  browsersync = require('browser-sync').create();
 
 // Handle HTML files
 // Handle favicon set
@@ -55,21 +56,35 @@ function images() {
 }
 
 // Handle dev server
-function devServer(cb) {
-  cb();
+function devServer(done) {
+  browsersync.init({
+    port: 8000,
+    server: {
+      baseDir: './dist',
+    },
+  });
+  done();
+}
+
+function watchFiles() {
+  watch('./src/styles/*.scss', styles);
+  watch('./src/js/*.js', scripts);
+  watch('./src/images/*', images);
+  // watch('./src/*', static);
 }
 
 // Wipe contents of dist folder
-function cleanDist() {
-  return src('dist', { read: false, allowEmpty: true }).pipe(clean());
+function clean() {
+  return del(['dist/**', '!dist']);
 }
 
 // Export tasks/scripts
 exports.styles = styles;
-exports.clean = cleanDist;
+exports.clean = clean;
 exports.start = series(devServer);
-exports.build = series(cleanDist, parallel(styles, scripts));
-
+exports.watch = watchFiles;
+exports.build = series(clean, parallel(styles, scripts));
+exports.serve = parallel(watchFiles, devServer);
 // ************************ ALL CODE BELOW HERE IS FOR GULP VERSION 3 ****************
 
 // const gulp = require('gulp');
