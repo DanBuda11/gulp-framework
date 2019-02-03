@@ -21,12 +21,13 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   postCSS = require('gulp-postcss'),
   stripComments = require('gulp-strip-comments'),
   babel = require('gulp-babel'),
-  browsersync = require('browser-sync').create();
+  browsersync = require('browser-sync').create(),
+  imagemin = require('gulp-imagemin');
 
 // Handle HTML files
 // Handle favicon set
 function static() {
-  return;
+  return src('src/index.html').pipe(dest('dist'));
 }
 
 // Handle CSS/SCSS files
@@ -47,12 +48,14 @@ function scripts() {
       })
     )
     .pipe(stripComments())
-    .pipe(dest('dist'));
+    .pipe(dest('dist/js'));
 }
 
 // Handle images
 function images() {
-  return;
+  return src('src/images/*.{png,gif,jpg,jpeg.svg}')
+    .pipe(imagemin())
+    .pipe(dest('dist/images'));
 }
 
 // Handle dev server
@@ -67,6 +70,7 @@ function devServer(done) {
 }
 
 function watchFiles() {
+  watch('./src/index.html', static);
   watch('./src/styles/*.scss', styles);
   watch('./src/js/*.js', scripts);
   watch('./src/images/*', images);
@@ -83,7 +87,7 @@ exports.styles = styles;
 exports.clean = clean;
 exports.start = series(devServer);
 exports.watch = watchFiles;
-exports.build = series(clean, parallel(styles, scripts));
+exports.build = series(clean, parallel(static, styles, scripts, images));
 exports.serve = parallel(watchFiles, devServer);
 // ************************ ALL CODE BELOW HERE IS FOR GULP VERSION 3 ****************
 
