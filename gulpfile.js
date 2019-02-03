@@ -36,7 +36,8 @@ function styles() {
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS())
     .pipe(postCSS())
-    .pipe(dest('dist/styles'));
+    .pipe(dest('dist/styles'))
+    .pipe(browsersync.stream());
 }
 
 // Handle JS files
@@ -63,19 +64,24 @@ function devServer(done) {
   browsersync.init({
     port: 8000,
     server: {
-      baseDir: './dist',
+      baseDir: './src',
     },
   });
-  done();
-}
 
-function watchFiles() {
   watch('./src/index.html', static);
   watch('./src/styles/*.scss', styles);
   watch('./src/js/*.js', scripts);
   watch('./src/images/*', images);
-  // watch('./src/*', static);
+  // done();
 }
+
+// function watchFiles() {
+//   watch('./src/index.html', static);
+//   watch('./src/styles/*.scss', styles);
+//   watch('./src/js/*.js', scripts);
+//   watch('./src/images/*', images);
+//   // watch('./src/*', static);
+// }
 
 // Wipe contents of dist folder
 function clean() {
@@ -86,9 +92,9 @@ function clean() {
 exports.styles = styles;
 exports.clean = clean;
 exports.start = series(devServer);
-exports.watch = watchFiles;
+// exports.watch = watchFiles;
 exports.build = series(clean, parallel(static, styles, scripts, images));
-exports.serve = parallel(watchFiles, devServer);
+exports.serve = devServer;
 // ************************ ALL CODE BELOW HERE IS FOR GULP VERSION 3 ****************
 
 // const gulp = require('gulp');
