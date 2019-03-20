@@ -25,6 +25,8 @@ A simple Gulp framework for front-end projects using HTML, Sass and Vanilla Java
 
 ### 1.0.0
 
+Link to the last version using Gulp v3 can be found [here](https://github.com/DanBuda11/gulp-framework/tree/2165768315c837f24a332c1d098abc750a360414).
+
 - `gulp` v3.9.1
 - `normalize.css` v8.0.0
 - Compile `.scss` to CSS with `gulp-sass` v4.0.1, add browser prefixes with `gulp-postcss` v7.0.5 and `autoprefixer` v9.1.5 plugin, and minify with `gulp-clean-css` v3.10.0
