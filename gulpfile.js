@@ -24,20 +24,29 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   browsersync = require('browser-sync').create(),
   imagemin = require('gulp-imagemin');
 
+function reload() {
+  browsersync.reload();
+}
+
 // Handle HTML files
 // Handle favicon set
 function static() {
-  return src('src/index.html').pipe(dest('dist'));
+  return src('src/index.html')
+    .pipe(dest('dist'))
+    .pipe(browsersync.stream());
 }
 
 // Handle CSS/SCSS files
 function styles() {
-  return src('src/styles/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(cleanCSS())
-    .pipe(postCSS())
-    .pipe(dest('dist/styles'))
-    .pipe(browsersync.stream());
+  return (
+    src('src/styles/*.scss')
+      .pipe(sass())
+      .on('error', sass.logError)
+      // .pipe(cleanCSS())
+      // .pipe(postCSS())
+      .pipe(dest('dist/styles'))
+      .pipe(browsersync.stream())
+  );
 }
 
 // Handle JS files
@@ -64,11 +73,11 @@ function devServer(done) {
   browsersync.init({
     port: 8000,
     server: {
-      baseDir: './src',
+      baseDir: './dist',
     },
   });
 
-  watch('./src/index.html', static);
+  watch('./src/index.html', series(static));
   watch('./src/styles/*.scss', styles);
   watch('./src/js/*.js', scripts);
   watch('./src/images/*', images);
