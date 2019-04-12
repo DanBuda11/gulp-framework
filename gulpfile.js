@@ -24,6 +24,8 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   browsersync = require('browser-sync').create(),
   imagemin = require('gulp-imagemin');
 
+sass.compiler = require('node-sass');
+
 function reload() {
   browsersync.reload();
 }
@@ -47,6 +49,12 @@ function styles() {
       .pipe(dest('dist/styles'))
       .pipe(browsersync.stream())
   );
+}
+
+function scss() {
+  return src('src/styles/*.scss')
+    .pipe(sass())
+    .pipe(dest('dist/styles'));
 }
 
 // Handle JS files
@@ -73,14 +81,14 @@ function devServer(done) {
   browsersync.init({
     port: 8000,
     server: {
-      baseDir: './dist',
+      baseDir: 'src',
     },
   });
 
-  watch('./src/index.html', series(static));
-  watch('./src/styles/*.scss', styles);
-  watch('./src/js/*.js', scripts);
-  watch('./src/images/*', images);
+  // watch('./src/index.html', series(static));
+  watch('styles/*.scss', scss);
+  // watch('./src/js/*.js', scripts);
+  // watch('./src/images/*', images);
   // done();
 }
 
