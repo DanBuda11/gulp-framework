@@ -1,27 +1,25 @@
-// Need tasks a dev server that hot reloads when scss, js, html change
-//   Don't need to minify, compile, anything
-// Need tasks for production build into dist folder
-//   This is when I turn up the juice and compile, minify, uglify, etc
-// When do I need to use done()?
-
 // JS: code split vendors, dev source maps
-// CSS: dev source maps?, cssnano?, is autoprefixer working?, remove comments
-// HTML: copy template and inject links/js/etc, remove comments
+// CSS: dev source maps?
 // Image minification
 // Browser sync: add any more options?
 // Bundle analyzer
 // Cache busting with hashed file names
-// gulp-strip-comments doesn't seem to be needed for JS & CSS build tasks; haven't tested HTML
+// When do I need to use done()?
 
-// ********** Current Attempt *****************************
+// ************************* Imports *************************
 
-// Imports
 const { src, dest, series, parallel, watch } = require('gulp'),
-  sass = require('gulp-sass'),
   // BrowserSync for dev server and hot reloading
   bs = require('browser-sync').create(),
-  // Only run tasks on files changed since last time task ran
-  changed = require('gulp-changed'),
+  sass = require('gulp-sass'),
+  // fs needed to check if src/css file exists in development
+  fs = require('fs'),
+  // Minimize HTML
+  htmlmin = require('gulp-htmlmin'),
+  // Minimize & optimize CSS
+  cleanCSS = require('gulp-clean-css'),
+  // PostCSS with autoprefixer
+  postCSS = require('gulp-postcss'),
   // Babel for Gulp
   babel = require('gulp-babel'),
   // Minimize JS
@@ -30,12 +28,19 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   size = require('gulp-size'),
   // Remove comments from files for production
   strip = require('gulp-strip-comments'),
-  del = require('del'),
-  cleanCSS = require('gulp-clean-css'),
-  postCSS = require('gulp-postcss');
+  // Used to wipe contents of dist when running build task
+  del = require('del');
 
-// Development Tasks
+//   imagemin = require('gulp-imagemin');
+
+// ************************* Development Tasks *************************
+
+// Task to run the BrowserSync server
 function browserSync() {
+  if (!fs.existsSync('./src/css/main.css')) {
+    serveSass();
+  }
+
   bs.init({
     port: 8080,
     server: {
@@ -43,16 +48,12 @@ function browserSync() {
     },
   });
 
-  watch('src/*.html', serveHTML);
+  watch('src/*.html').on('change', bs.reload);
   watch('src/scss/*.scss', serveSass);
-  watch('src/js/*.js', serveJS);
+  watch('src/js/*.js').on('change', bs.reload);
 }
 
-// Do I even need this or serveJS?
-function serveHTML() {
-  return src('src/*.html').pipe(bs.stream);
-}
-
+// Compile Sass to CSS in development
 function serveSass() {
   return src('src/scss/*.scss')
     .pipe(sass())
@@ -60,91 +61,7 @@ function serveSass() {
     .pipe(bs.stream());
 }
 
-function serveJS() {
-  return src('src/js/*.js').pipe(bs.stream());
-}
-
-// Production Tasks
-function clean() {
-  return del(['dist/**', '!dist']);
-}
-
-function buildHTML() {}
-
-function buildCSS() {
-  return (
-    src('src/scss/*.scss')
-      // changed doesn't seem to be working either here or in buildJS
-      .pipe(changed('dist/css', { extension: '.css' }))
-      .pipe(sass())
-      .on('error', sass.logError)
-      // .pipe(strip())
-      // Should cleanCSS or postCSS come first?
-      .pipe(cleanCSS())
-      .pipe(postCSS())
-      .pipe(size({ showFiles: true }))
-      .pipe(dest('dist/css'))
-  );
-}
-
-function buildJS() {
-  return (
-    src('src/js/*.js')
-      .pipe(changed('dist/js'))
-      .pipe(
-        babel({
-          presets: ['@babel/env'],
-        })
-      )
-      .pipe(uglify())
-      // .pipe(strip())
-      .pipe(size({ showFiles: true }))
-      .pipe(dest('dist/js'))
-      .pipe(bs.stream())
-  );
-}
-
-// Exports
-exports.serve = browserSync;
-exports.clean = clean;
-exports.build = series(clean, parallel(buildCSS, buildJS));
-
-//   imagemin = require('gulp-imagemin');
-
-// // Handle HTML files
-// // Handle favicon set
-// function static() {
-//   return src('src/index.html')
-//     .pipe(dest('dist'))
-//     .pipe(browsersync.stream());
-// }
-
-// // Handle images
-// function images() {
-//   return src('src/images/*.{png,gif,jpg,jpeg.svg}')
-//     .pipe(imagemin())
-//     .pipe(dest('dist/images'));
-// }
-
-//   // watch('./src/index.html', series(static));
-//   watch('styles/*.scss', scss);
-//   // watch('./src/js/*.js', scripts);
-//   // watch('./src/images/*', images);
-//   // done();
-// }
-
-// // function watchFiles() {
-// //   watch('./src/index.html', static);
-// //   watch('./src/styles/*.scss', styles);
-// //   watch('./src/js/*.js', scripts);
-// //   watch('./src/images/*', images);
-// //   // watch('./src/*', static);
-// // }
-
-// // Minimize images
-// const imagemin = require('gulp-imagemin');
-
-// // *** FILE TASKS
+// ************************* Production Tasks *************************
 
 // // Port root directory files to dist folder (index.html & favicon package files)
 // gulp.task('root', function() {
@@ -155,21 +72,76 @@ exports.build = series(clean, parallel(buildCSS, buildJS));
 //     .pipe(browserSync.stream());
 // });
 
+// Wipe contents of dist folder
+function clean() {
+  return del(['dist/**', '!dist']);
+}
+
+// Miniize HTML files
+function buildHTML() {
+  return src('src/*.html')
+    .pipe(strip())
+    .pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }))
+    .pipe(size({ showFiles: true }))
+    .pipe(dest('dist'));
+}
+
+// Move favicon files from src to dist
+function buildFavicon() {
+  // do i need to have changed in here?
+  return src('src/*.{ico,png,xml,svg,webmanifest}').pipe(dest('dist'));
+}
+
+// Minimize CSS files and add prefixes if needed
+function buildCSS() {
+  return (
+    src('src/scss/*.scss')
+      // changed doesn't seem to be working either here or in buildJS
+      .pipe(sass())
+      .on('error', sass.logError)
+      .pipe(cleanCSS())
+      .pipe(postCSS())
+      .pipe(size({ showFiles: true }))
+      .pipe(dest('dist/css'))
+  );
+}
+
+// Minimize JavaScript files
+function buildJS() {
+  return src('src/js/*.js')
+    .pipe(
+      babel({
+        presets: ['@babel/env'],
+      })
+    )
+    .pipe(uglify())
+    .pipe(size({ showFiles: true }))
+    .pipe(dest('dist/js'));
+}
+
+//   gulp.watch('src/images/*.{png,gif,jpg,jpeg,svg', ['images']);
+// });
+
+// // Handle images
+// function images() {
+//   return src('src/images/*.{png,gif,jpg,jpeg.svg}')
+//     .pipe(imagemin())
+//     .pipe(dest('dist/images'));
+// }
+
 // // Minify images and send to dist folder
 // gulp.task('images', function() {
 //   return gulp
 //     .src('src/images/*.{png,gif,jpg,jpeg.svg}')
-//     .pipe(changed('dist/images'))
 //     .pipe(imagemin())
 //     .pipe(gulp.dest('dist/images'));
 // });
 
-//   // Watch for file changes
-//   gulp.watch('src/*.{html,ico,png,xml,svg,webmanifest}', ['html']);
-//   gulp.watch('src/images/*.{png,gif,jpg,jpeg,svg', ['images']);
-// });
+// ************************* Exported Tasks *************************
 
-// // *** RUN FILE TASKS WITHOUT SERVER
-
-// // Default task to run all file tasks
-// gulp.task('default', ['root', 'styles', 'js', 'images']);
+exports.serve = browserSync;
+exports.clean = clean;
+exports.build = series(
+  clean,
+  parallel(buildHTML, buildFavicon, buildCSS, buildJS)
+);
