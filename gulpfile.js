@@ -1,10 +1,11 @@
 // JS: code split vendors, dev source maps
 // CSS: dev source maps?
-// Image minification
 // Browser sync: add any more options?
 // Bundle analyzer
 // Cache busting with hashed file names
 // When do I need to use done()?
+// Documentation
+// Find a different buddha image (smaller) and better color for initial background
 
 // ************************* Imports *************************
 
@@ -24,6 +25,8 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   babel = require('gulp-babel'),
   // Minimize JS
   uglify = require('gulp-uglify'),
+  // Minify images
+  imagemin = require('gulp-imagemin'),
   // Show sizes of files in the terminal
   size = require('gulp-size'),
   // Remove comments from files for production
@@ -31,84 +34,89 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   // Used to wipe contents of dist when running build task
   del = require('del');
 
-//   imagemin = require('gulp-imagemin');
+// ************************* Folder Paths *************************
+
+const paths = {
+  input: 'src',
+  output: 'dist',
+  devHTML: 'src/*.html',
+  devCSS: 'src/css',
+  devSCSS: 'src/scss/*.scss',
+  devJS: 'src/js/*.js',
+  devImages: 'src/images/*.{png,gif,jpg,jpeg.svg}',
+  devFavicons: 'src/*.{ico,png,xml,svg,webmanifest}',
+  prodCSS: 'dist/css',
+  prodJS: 'dist/js',
+  prodImages: 'dist/images',
+};
 
 // ************************* Development Tasks *************************
 
 // Task to run the BrowserSync server
 function browserSync() {
-  if (!fs.existsSync('./src/css/main.css')) {
+  if (!fs.existsSync(`${paths.devCSS}/main.css`)) {
     serveSass();
   }
 
   bs.init({
     port: 8080,
     server: {
-      baseDir: 'src',
+      baseDir: paths.input,
     },
   });
 
-  watch('src/*.html').on('change', bs.reload);
-  watch('src/scss/*.scss', serveSass);
-  watch('src/js/*.js').on('change', bs.reload);
+  watch(paths.devHTML).on('change', bs.reload);
+  watch(paths.devSCSS, serveSass);
+  watch(paths.devJS).on('change', bs.reload);
 }
 
 // Compile Sass to CSS in development
 function serveSass() {
-  return src('src/scss/*.scss')
+  return src(paths.devSCSS)
     .pipe(sass())
-    .pipe(dest('src/css'))
+    .pipe(dest(paths.devCSS))
     .pipe(bs.stream());
 }
 
 // ************************* Production Tasks *************************
 
-// // Port root directory files to dist folder (index.html & favicon package files)
-// gulp.task('root', function() {
-//   return gulp
-//     .src('src/*.{html,ico,png,xml,svg,webmanifest}')
-//     .pipe(changed('dist'))
-//     .pipe(gulp.dest('dist'))
-//     .pipe(browserSync.stream());
-// });
-
 // Wipe contents of dist folder
 function clean() {
-  return del(['dist/**', '!dist']);
+  return del([`${paths.output}/**`, `!${paths.output}`]);
 }
 
-// Miniize HTML files
+// Minimize HTML files
 function buildHTML() {
-  return src('src/*.html')
+  return src(paths.devHTML)
     .pipe(strip())
     .pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }))
     .pipe(size({ showFiles: true }))
-    .pipe(dest('dist'));
+    .pipe(dest(paths.output));
 }
 
 // Move favicon files from src to dist
 function buildFavicon() {
   // do i need to have changed in here?
-  return src('src/*.{ico,png,xml,svg,webmanifest}').pipe(dest('dist'));
+  return src(paths.devFavicons).pipe(dest(paths.output));
 }
 
 // Minimize CSS files and add prefixes if needed
 function buildCSS() {
   return (
-    src('src/scss/*.scss')
+    src(paths.devSCSS)
       // changed doesn't seem to be working either here or in buildJS
       .pipe(sass())
       .on('error', sass.logError)
       .pipe(cleanCSS())
       .pipe(postCSS())
       .pipe(size({ showFiles: true }))
-      .pipe(dest('dist/css'))
+      .pipe(dest(paths.prodCSS))
   );
 }
 
 // Minimize JavaScript files
 function buildJS() {
-  return src('src/js/*.js')
+  return src(paths.devJS)
     .pipe(
       babel({
         presets: ['@babel/env'],
@@ -116,26 +124,15 @@ function buildJS() {
     )
     .pipe(uglify())
     .pipe(size({ showFiles: true }))
-    .pipe(dest('dist/js'));
+    .pipe(dest(paths.prodJS));
 }
 
-//   gulp.watch('src/images/*.{png,gif,jpg,jpeg,svg', ['images']);
-// });
-
-// // Handle images
-// function images() {
-//   return src('src/images/*.{png,gif,jpg,jpeg.svg}')
-//     .pipe(imagemin())
-//     .pipe(dest('dist/images'));
-// }
-
-// // Minify images and send to dist folder
-// gulp.task('images', function() {
-//   return gulp
-//     .src('src/images/*.{png,gif,jpg,jpeg.svg}')
-//     .pipe(imagemin())
-//     .pipe(gulp.dest('dist/images'));
-// });
+// Minimize images
+function buildImages() {
+  return src(paths.devImages)
+    .pipe(imagemin())
+    .pipe(dest(paths.prodImages));
+}
 
 // ************************* Exported Tasks *************************
 
@@ -143,5 +140,5 @@ exports.serve = browserSync;
 exports.clean = clean;
 exports.build = series(
   clean,
-  parallel(buildHTML, buildFavicon, buildCSS, buildJS)
+  parallel(buildHTML, buildFavicon, buildCSS, buildJS, buildImages)
 );
