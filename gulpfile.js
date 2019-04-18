@@ -1,11 +1,7 @@
 // JS: code split vendors, dev source maps
 // CSS: dev source maps?
-// Browser sync: add any more options?
-// Bundle analyzer
 // Cache busting with hashed file names
-// When do I need to use done()?
 // Documentation
-// Find a different buddha image (smaller) and better color for initial background
 
 // ************************* Imports *************************
 
@@ -131,6 +127,7 @@ function buildJS() {
 function buildImages() {
   return src(paths.devImages)
     .pipe(imagemin())
+    .pipe(size({ showFiles: true }))
     .pipe(dest(paths.prodImages));
 }
 
