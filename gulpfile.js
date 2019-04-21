@@ -90,7 +90,7 @@ function buildHTML() {
     .pipe(dest(paths.output));
 }
 
-// Move favicon files from src to dist
+// Move favicon files from src to dist if they exist
 function buildFavicon() {
   // do i need to have changed in here?
   return src(paths.devFavicons).pipe(dest(paths.output));
