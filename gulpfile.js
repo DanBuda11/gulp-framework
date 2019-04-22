@@ -15,6 +15,8 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   htmlmin = require('gulp-htmlmin'),
   // Minimize & optimize CSS
   cleanCSS = require('gulp-clean-css'),
+  // Remove unused/dead CSS
+  purifyCSS = require('gulp-purifycss'),
   // PostCSS with autoprefixer
   postCSS = require('gulp-postcss'),
   // Babel for Gulp
@@ -103,6 +105,7 @@ function buildCSS() {
       // changed doesn't seem to be working either here or in buildJS
       .pipe(sass())
       .on('error', sass.logError)
+      .pipe(purifyCSS([paths.devHTML, paths.devJS]))
       .pipe(cleanCSS())
       .pipe(postCSS())
       .pipe(size({ showFiles: true }))
