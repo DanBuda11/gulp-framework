@@ -1,8 +1,3 @@
-// JS: code split vendors, dev source maps
-// CSS: dev source maps?
-// Cache busting with hashed file names
-// Documentation
-
 // ************************* Imports *************************
 
 const { src, dest, series, parallel, watch } = require('gulp'),
@@ -30,7 +25,7 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   // Remove comments from files for production
   strip = require('gulp-strip-comments'),
   // Used to wipe contents of dist when running build task
-  del = require('del');
+  del = require('del'),
 
 // ************************* Folder Paths *************************
 
@@ -57,6 +52,7 @@ function browserSync() {
   }
 
   bs.init({
+    // Dev server will run at localhost:8080
     port: 8080,
     server: {
       baseDir: paths.input,
@@ -94,23 +90,19 @@ function buildHTML() {
 
 // Move favicon files from src to dist if they exist
 function buildFavicon() {
-  // do i need to have changed in here?
   return src(paths.devFavicons).pipe(dest(paths.output));
 }
 
 // Minimize CSS files and add prefixes if needed
 function buildCSS() {
-  return (
-    src(paths.devSCSS)
-      // changed doesn't seem to be working either here or in buildJS
-      .pipe(sass())
-      .on('error', sass.logError)
-      .pipe(purifyCSS([paths.devHTML, paths.devJS]))
-      .pipe(cleanCSS())
-      .pipe(postCSS())
-      .pipe(size({ showFiles: true }))
-      .pipe(dest(paths.prodCSS))
-  );
+  return src(paths.devSCSS)
+    .pipe(sass())
+    .on('error', sass.logError)
+    .pipe(purifyCSS([paths.devHTML, paths.devJS]))
+    .pipe(cleanCSS())
+    .pipe(postCSS())
+    .pipe(size({ showFiles: true }))
+    .pipe(dest(paths.prodCSS));
 }
 
 // Minimize JavaScript files
@@ -136,8 +128,11 @@ function buildImages() {
 
 // ************************* Exported Tasks *************************
 
+// Run gulp serve in the terminal to start development mode
 exports.serve = browserSync;
+// Run gulp clean to empty dist folder
 exports.clean = clean;
+// Run gulp build to run production build
 exports.build = series(
   clean,
   parallel(buildHTML, buildFavicon, buildCSS, buildJS, buildImages)
