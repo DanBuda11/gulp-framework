@@ -2,26 +2,36 @@
 
 <kbd>![Image](gulpframework.png)</kbd>
 
-A simple Gulp framework for front-end projects using HTML, Sass and Vanilla JavaScript.
+A simple Gulp framework with a development server and production script for front-end projects using HTML, Sass and Vanilla JavaScript.
 
 ## Features
 
 - Browser "reset" using `normalize.css`
-- Minified CSS compiled from Sass
-- Minified JavaScript compiled with Babel 7
-- Minified images with `imagemin`
+- Production build with minified HTML, CSS (compiled from SCSS), JavaScript (using Babel 7) and images
 - Automatically add browser prefixes with `postcss` and `autoprefixer` (default set to last 2 versions)
-- Local server with hot reloading and bypass of unchanged files using `browser-sync`
+- Local development server with hot reloading using `browser-sync`
 
 ## How to Use
 
 - Git clone or fork the repository
 - `npm install` or `npm i` to install dependencies
-- `gulp watch` to watch for any changes to files in the `src` directory and compile them to the `dist` folder
-- `gulp serve` to start the local server at `localhost:8080` which watches for file changes in the `src` directory, complies them in the `dist` folder, and hot reloads in the browser. running `gulp serve` should automatically open the project in the browser using the compiled files in `dist`
-- Do all of your work in the `src` directory
+- `gulp serve` to launch development server with hot reloading at `localhost:8080`
+- `gulp build` to run the production task
+- Do all of your work in the `src` directory and build production files to the `dist` directory
 
 ## Version Information
+
+### 2.0.0
+
+- `gulp` v4.0.1
+- `normalize.css` v8.0.1
+- `browser-sync` v2.26.5 for development server with hot reloading
+- HTML minification with `gulp-htmlmin` v5.0.1
+- CSS minification and prefixing with `autoprefixer` v9.5.1 & `gulp-postcss` v8.0.0
+- Removal of dead/unused CSS with `gulp-purifycss` v0.2.0
+- JavaScript minification with Babel 7 (`@babel/core` v7.4.3, `gulp-babel` v7.4.3) & `gulp-uglify` v3.0.2
+- Image minification with `gulp-imagemin` v5.0.3
+- Remove comments in production files with `gulp-strip-comments` v2.5.2
 
 ### 1.0.0
 

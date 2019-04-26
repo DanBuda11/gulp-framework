@@ -25,7 +25,7 @@ const { src, dest, series, parallel, watch } = require('gulp'),
   // Remove comments from files for production
   strip = require('gulp-strip-comments'),
   // Used to wipe contents of dist when running build task
-  del = require('del'),
+  del = require('del');
 
 // ************************* Folder Paths *************************
 
@@ -47,9 +47,8 @@ const paths = {
 
 // Task to run the BrowserSync server
 function browserSync() {
-  if (!fs.existsSync(`${paths.devCSS}/main.css`)) {
-    serveSass();
-  }
+  // Run serveSass when starting the dev server to make sure the SCSS & dev CSS are the same
+  serveSass();
 
   bs.init({
     // Dev server will run at localhost:8080
