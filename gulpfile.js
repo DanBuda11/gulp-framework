@@ -36,7 +36,7 @@ const paths = {
   devCSS: 'src/css',
   devSCSS: 'src/scss/*.scss',
   devJS: 'src/js/*.js',
-  devImages: 'src/images/*.{png,gif,jpg,jpeg.svg}',
+  devImages: 'src/images/*.{png,gif,jpg,jpeg,svg}',
   devFavicons: 'src/*.{ico,png,xml,svg,webmanifest}',
   prodCSS: 'dist/css',
   prodJS: 'dist/js',
