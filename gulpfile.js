@@ -41,6 +41,7 @@ const paths = {
   prodCSS: 'dist/css',
   prodJS: 'dist/js',
   prodImages: 'dist/images',
+  normalize: 'src/css/normalize.css',
 };
 
 // ************************* Development Tasks *************************
@@ -104,6 +105,14 @@ function buildCSS() {
     .pipe(dest(paths.prodCSS));
 }
 
+// Move normalize.css from src/css to dist/css
+function buildNormalize() {
+  return src(paths.normalize)
+    .pipe(cleanCSS())
+    .pipe(size({ showFiles: true }))
+    .pipe(dest(paths.prodCSS));
+}
+
 // Minimize JavaScript files
 function buildJS() {
   return src(paths.devJS)
@@ -134,5 +143,12 @@ exports.clean = clean;
 // Run gulp build to run production build
 exports.build = series(
   clean,
-  parallel(buildHTML, buildFavicon, buildCSS, buildJS, buildImages)
+  parallel(
+    buildHTML,
+    buildFavicon,
+    buildCSS,
+    buildNormalize,
+    buildJS,
+    buildImages
+  )
 );
