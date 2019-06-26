@@ -1,31 +1,29 @@
 // ************************* Imports *************************
 
-const { src, dest, series, parallel, watch } = require('gulp'),
-  // BrowserSync for dev server and hot reloading
-  bs = require('browser-sync').create(),
-  sass = require('gulp-sass'),
-  // fs needed to check if src/css file exists in development
-  fs = require('fs'),
-  // Minimize HTML
-  htmlmin = require('gulp-htmlmin'),
-  // Minimize & optimize CSS
-  cleanCSS = require('gulp-clean-css'),
-  // Remove unused/dead CSS
-  purifyCSS = require('gulp-purifycss'),
-  // PostCSS with autoprefixer
-  postCSS = require('gulp-postcss'),
-  // Babel for Gulp
-  babel = require('gulp-babel'),
-  // Minimize JS
-  uglify = require('gulp-uglify'),
-  // Minify images
-  imagemin = require('gulp-imagemin'),
-  // Show sizes of files in the terminal
-  size = require('gulp-size'),
-  // Remove comments from files for production
-  strip = require('gulp-strip-comments'),
-  // Used to wipe contents of dist when running build task
-  del = require('del');
+const { src, dest, series, parallel, watch } = require('gulp');
+// BrowserSync for dev server and hot reloading
+const bs = require('browser-sync').create();
+const sass = require('gulp-sass');
+// Minimize HTML
+const htmlmin = require('gulp-htmlmin');
+// Minimize & optimize CSS
+const cleanCSS = require('gulp-clean-css');
+// Remove unused/dead CSS
+const purifyCSS = require('gulp-purifycss');
+// PostCSS with autoprefixer
+const postCSS = require('gulp-postcss');
+// Babel for Gulp
+const babel = require('gulp-babel');
+// Minimize JS
+const uglify = require('gulp-uglify');
+// Minify images
+const imagemin = require('gulp-imagemin');
+// Show sizes of files in the terminal
+const size = require('gulp-size');
+// Remove comments from files for production
+const strip = require('gulp-strip-comments');
+// Used to wipe contents of dist when running build task
+const del = require('del');
 
 // ************************* Folder Paths *************************
 
@@ -46,6 +44,14 @@ const paths = {
 
 // ************************* Development Tasks *************************
 
+// Compile Sass to CSS in development
+function serveSass() {
+  return src(paths.devSCSS)
+    .pipe(sass())
+    .pipe(dest(paths.devCSS))
+    .pipe(bs.stream());
+}
+
 // Task to run the BrowserSync server
 function browserSync() {
   // Run serveSass when starting the dev server to make sure the SCSS & dev CSS are the same
@@ -62,14 +68,6 @@ function browserSync() {
   watch(paths.devHTML).on('change', bs.reload);
   watch(paths.devSCSS, serveSass);
   watch(paths.devJS).on('change', bs.reload);
-}
-
-// Compile Sass to CSS in development
-function serveSass() {
-  return src(paths.devSCSS)
-    .pipe(sass())
-    .pipe(dest(paths.devCSS))
-    .pipe(bs.stream());
 }
 
 // ************************* Production Tasks *************************
@@ -119,7 +117,7 @@ function buildJS() {
     .pipe(
       babel({
         presets: ['@babel/env'],
-      })
+      }),
     )
     .pipe(uglify())
     .pipe(size({ showFiles: true }))
@@ -149,6 +147,6 @@ exports.build = series(
     buildCSS,
     buildNormalize,
     buildJS,
-    buildImages
-  )
+    buildImages,
+  ),
 );

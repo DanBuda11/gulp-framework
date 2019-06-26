@@ -21,6 +21,12 @@ A simple Gulp framework with a development server and production script for fron
 
 ## Version Information
 
+### 2.1.0
+
+- Added configurations for ESLint, Stylelint, Prettier
+- Several semver breaking updates to dependencies
+- Minor tweaks to `gulpfile.js` due to linting
+
 ### 2.0.0
 
 - `gulp` v4.0.1
