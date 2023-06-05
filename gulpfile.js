@@ -3,7 +3,8 @@
 const { src, dest, series, parallel, watch } = require('gulp');
 // BrowserSync for dev server and hot reloading
 const bs = require('browser-sync').create();
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
+sass.compiler = require('sass');
 // Minimize HTML
 const htmlmin = require('gulp-htmlmin');
 // Minimize & optimize CSS
@@ -17,13 +18,13 @@ const babel = require('gulp-babel');
 // Minimize JS
 const uglify = require('gulp-uglify');
 // Minify images
-const imagemin = require('gulp-imagemin');
+const imagemin = import('gulp-imagemin');
 // Show sizes of files in the terminal
 const size = require('gulp-size');
 // Remove comments from files for production
 const strip = require('gulp-strip-comments');
 // Used to wipe contents of dist when running build task
-const del = require('del');
+const del = import('del');
 
 // ************************* Folder Paths *************************
 
@@ -117,7 +118,7 @@ function buildJS() {
     .pipe(
       babel({
         presets: ['@babel/env'],
-      }),
+      })
     )
     .pipe(uglify())
     .pipe(size({ showFiles: true }))
@@ -147,6 +148,6 @@ exports.build = series(
     buildCSS,
     buildNormalize,
     buildJS,
-    buildImages,
-  ),
+    buildImages
+  )
 );

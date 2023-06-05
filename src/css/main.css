@@ -2,11 +2,14 @@ body {
   background: #448abd;
   text-align: center;
   padding: 2em;
-  font-family: sans-serif; }
-  body img {
-    max-width: 200px; }
-  body p {
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.5;
-    font-size: 18px; }
+  font-family: sans-serif;
+}
+body img {
+  max-width: 200px;
+}
+body p {
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-size: 18px;
+}
