@@ -21,6 +21,11 @@ A simple Gulp framework with a development server and production script for fron
 
 ## Version Information
 
+### 3.0.0
+
+- Updated all dependencies to most current versions as of June 5, 2023
+- Replaced deprecated packages and babel-eslint
+
 ### 2.1.0
 
 - Added configurations for ESLint, Stylelint, Prettier
