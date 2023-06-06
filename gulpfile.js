@@ -18,13 +18,13 @@ const babel = require('gulp-babel');
 // Minimize JS
 const uglify = require('gulp-uglify');
 // Minify images
-const imagemin = import('gulp-imagemin');
+const imagemin = require('gulp-imagemin');
 // Show sizes of files in the terminal
 const size = require('gulp-size');
 // Remove comments from files for production
 const strip = require('gulp-strip-comments');
 // Used to wipe contents of dist when running build task
-const del = import('del');
+const del = require('del');
 
 // ************************* Folder Paths *************************
 
