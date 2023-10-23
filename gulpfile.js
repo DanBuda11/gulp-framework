@@ -1,30 +1,39 @@
 // ************************* Imports *************************
 
-const { src, dest, series, parallel, watch } = require('gulp');
+import gulp from 'gulp';
 // BrowserSync for dev server and hot reloading
-const bs = require('browser-sync').create();
-const sass = require('gulp-sass')(require('sass'));
-sass.compiler = require('sass');
-// Minimize HTML
-const htmlmin = require('gulp-htmlmin');
-// Minimize & optimize CSS
-const cleanCSS = require('gulp-clean-css');
-// Remove unused/dead CSS
-const purifyCSS = require('gulp-purifycss');
-// PostCSS with autoprefixer
-const postCSS = require('gulp-postcss');
-// Babel for Gulp
-const babel = require('gulp-babel');
-// Minimize JS
-const uglify = require('gulp-uglify');
-// Minify images
-const imagemin = require('gulp-imagemin');
-// Show sizes of files in the terminal
-const size = require('gulp-size');
-// Remove comments from files for production
-const strip = require('gulp-strip-comments');
+import browserSync from 'browser-sync';
+
 // Used to wipe contents of dist when running build task
-const del = require('del');
+import { deleteAsync } from 'del';
+
+// Minimize HTML
+import htmlmin from 'gulp-htmlmin';
+// const htmlmin = require('gulp-htmlmin');
+// // Minimize & optimize CSS
+// const cleanCSS = require('gulp-clean-css');
+import cleanCSS from 'gulp-clean-css';
+// // Remove unused/dead CSS
+// const purifyCSS = require('gulp-purifycss');
+import purifyCSS from 'gulp-purifycss';
+// // PostCSS with autoprefixer
+import postCSS from 'gulp-postcss';
+// const postCSS = require('gulp-postcss');
+// // Babel for Gulp
+// const babel = require('gulp-babel');
+// // Minimize JS
+// const uglify = require('gulp-uglify');
+// // Minify images
+// const imagemin = require('gulp-imagemin');
+// // Show sizes of files in the terminal
+// const size = require('gulp-size');
+import size from 'gulp-size';
+// // Remove comments from files for production
+// const strip = require('gulp-strip-comments');
+import strip from 'gulp-strip-comments';
+
+const { src, dest, series, parallel, watch } = gulp;
+const bs = browserSync;
 
 // ************************* Folder Paths *************************
 
@@ -32,8 +41,7 @@ const paths = {
   input: 'src',
   output: 'dist',
   devHTML: 'src/*.html',
-  devCSS: 'src/css',
-  devSCSS: 'src/scss/*.scss',
+  devCSS: 'src/css/*.css',
   devJS: 'src/js/*.js',
   devImages: 'src/images/*.{png,gif,jpg,jpeg,svg}',
   devFavicons: 'src/*.{ico,png,xml,svg,webmanifest}',
@@ -54,9 +62,9 @@ function serveSass() {
 }
 
 // Task to run the BrowserSync server
-function browserSync() {
+export function serve() {
   // Run serveSass when starting the dev server to make sure the SCSS & dev CSS are the same
-  serveSass();
+  // serveSass();
 
   bs.init({
     // Dev server will run at localhost:8080
@@ -67,19 +75,19 @@ function browserSync() {
   });
 
   watch(paths.devHTML).on('change', bs.reload);
-  watch(paths.devSCSS, serveSass);
+  watch(paths.devCSS).on('change', bs.reload);
   watch(paths.devJS).on('change', bs.reload);
 }
 
 // ************************* Production Tasks *************************
 
 // Wipe contents of dist folder
-function clean() {
-  return del([`${paths.output}/**`, `!${paths.output}`]);
+export function clean() {
+  return deleteAsync([`${paths.output}/**`, `!${paths.output}`]);
 }
 
 // Minimize HTML files
-function buildHTML() {
+export function buildHTML() {
   return src(paths.devHTML)
     .pipe(strip())
     .pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }))
@@ -93,15 +101,17 @@ function buildFavicon() {
 }
 
 // Minimize CSS files and add prefixes if needed
-function buildCSS() {
-  return src(paths.devSCSS)
-    .pipe(sass())
-    .on('error', sass.logError)
-    .pipe(purifyCSS([paths.devHTML, paths.devJS]))
-    .pipe(cleanCSS())
-    .pipe(postCSS())
-    .pipe(size({ showFiles: true }))
-    .pipe(dest(paths.prodCSS));
+export function buildCSS() {
+  return (
+    src(paths.devCSS)
+      // .pipe(sass())
+      // .on('error', sass.logError)
+      .pipe(purifyCSS([paths.devHTML, paths.devJS]))
+      .pipe(cleanCSS())
+      .pipe(postCSS())
+      .pipe(size({ showFiles: true }))
+      .pipe(dest(paths.prodCSS))
+  );
 }
 
 // Move normalize.css from src/css to dist/css
@@ -136,18 +146,24 @@ function buildImages() {
 // ************************* Exported Tasks *************************
 
 // Run gulp serve in the terminal to start development mode
-exports.serve = browserSync;
-// Run gulp clean to empty dist folder
-exports.clean = clean;
-// Run gulp build to run production build
-exports.build = series(
-  clean,
-  parallel(
-    buildHTML,
-    buildFavicon,
-    buildCSS,
-    buildNormalize,
-    buildJS,
-    buildImages
-  )
-);
+// export { bSync as serve };
+
+// export clean;
+
+export const build = series(clean, parallel(buildHTML, buildCSS));
+
+// // exports.serve = browserSync;
+// // Run gulp clean to empty dist folder
+// exports.clean = clean;
+// // Run gulp build to run production build
+// exports.build = series(
+//   clean,
+//   parallel(
+//     buildHTML,
+//     buildFavicon,
+//     buildCSS,
+//     buildNormalize,
+//     buildJS,
+//     buildImages
+//   )
+// );
