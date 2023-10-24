@@ -13,24 +13,16 @@
   },
   "license": "ISC",
   "browserslist": [
-    "> 0.2%",
+    "last 2 versions",
     "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+    "> 0.2%"
   ],
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.22.1",
     "@babel/eslint-parser": "^7.21.8",
     "@babel/preset-env": "^7.22.4",
     "autoprefixer": "^10.4.14",
-    "browser-sync": "^2.29.3",
     "del": "^7.1.0",
-    "eslint": "^8.42.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-html": "^7.1.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.3.0",
@@ -38,12 +30,20 @@
     "gulp-imagemin": "^7.1.0",
     "gulp-postcss": "^9.0.1",
     "gulp-purifycss": "^0.2.0",
-    "gulp-sass": "^5.1.0",
     "gulp-size": "^4.0.1",
     "gulp-strip-comments": "^2.5.2",
-    "gulp-uglify": "^3.0.2",
+    "gulp-uglify": "^3.0.2"
+    
+  },
+  "devDependencies": {
+    "browser-sync": "^2.29.3",
+    "eslint": "^8.42.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.8",
-    "sass": "^1.62.1",
     "stylelint": "^15.6.3",
     "stylelint-config-standard": "^33.0.0"
   }
