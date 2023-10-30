@@ -1,8 +1,8 @@
 {
   "name": "gulp-framework",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "type": "module",
-  "description": "Simple Gulp Framework with Sass",
+  "description": "Simple Gulp Framework for Simple Frontend Projects",
   "main": "index.js",
   "scripts": {},
   "keywords": [],
@@ -18,33 +18,32 @@
     "> 0.2%"
   ],
   "dependencies": {
-    "@babel/core": "^7.22.1",
-    "@babel/eslint-parser": "^7.21.8",
-    "@babel/preset-env": "^7.22.4",
-    "autoprefixer": "^10.4.14",
+    "@babel/core": "^7.23.2",
+    "@babel/eslint-parser": "^7.22.15",
+    "@babel/preset-env": "^7.23.2",
+    "autoprefixer": "^10.4.16",
     "del": "^7.1.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-htmlmin": "^5.0.1",
-    "gulp-imagemin": "^7.1.0",
+    "gulp-imagemin": "^8.0.0",
     "gulp-postcss": "^9.0.1",
     "gulp-purifycss": "^0.2.0",
     "gulp-size": "^4.0.1",
-    "gulp-strip-comments": "^2.5.2",
+    "gulp-strip-comments": "^2.6.0",
     "gulp-uglify": "^3.0.2"
-    
   },
   "devDependencies": {
     "browser-sync": "^2.29.3",
-    "eslint": "^8.42.0",
+    "eslint": "^8.52.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-html": "^7.1.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.8",
-    "stylelint": "^15.6.3",
-    "stylelint-config-standard": "^33.0.0"
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.0.3",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0"
   }
 }

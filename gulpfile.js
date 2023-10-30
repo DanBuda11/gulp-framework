@@ -115,7 +115,6 @@ export function serve() {
   });
 
   watch(paths.devHTML).on('change', bs.reload);
-  // watch(paths.devHTM, bs.reload);
   watch(paths.devCSS).on('change', bs.reload);
   watch(paths.devJS).on('change', bs.reload);
 }

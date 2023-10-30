@@ -2,12 +2,12 @@
 
 <kbd>![Image](gulpframework.png)</kbd>
 
-A simple Gulp framework with a development server and production script for front-end projects using HTML, Sass and Vanilla JavaScript.
+A simple Gulp framework with a development server and production script for front-end projects using HTML, CSS and Vanilla JavaScript.
 
 ## Features
 
 - Browser "reset" using `normalize.css`
-- Production build with minified HTML, CSS (compiled from SCSS), JavaScript (using Babel 7) and images
+- Production build with minified HTML, CSS, JavaScript (using Babel 8) and images
 - Automatically add browser prefixes with `postcss` and `autoprefixer` (default set to last 2 versions)
 - Local development server with hot reloading using `browser-sync`
 
@@ -20,6 +20,16 @@ A simple Gulp framework with a development server and production script for fron
 - Do all of your work in the `src` directory and build production files to the `dist` directory
 
 ## Version Information
+
+### 4.0.0
+
+- Changed all packages used in `gulpfile.js` from `require()` to ESM `import` syntax
+- Cleaned up `gulpfile.js` comments and reordered code
+- Removed separate `postcss.config.js` file and add that information to `gulpfile.js`
+- Removed Sass in favor of pure CSS
+- Updated all npm packages to latest versions
+- Removed Google Analytics template language in `index.html`
+-
 
 ### 3.0.0
 
