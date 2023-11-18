@@ -27,10 +27,10 @@
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-htmlmin": "^5.0.1",
-    "gulp-imagemin": "^8.0.0",
+    "gulp-imagemin": "^9.0.0",
     "gulp-postcss": "^9.0.1",
     "gulp-purifycss": "^0.2.0",
-    "gulp-size": "^4.0.1",
+    "gulp-size": "^5.0.0",
     "gulp-strip-comments": "^2.6.0",
     "gulp-uglify": "^3.0.2"
   },

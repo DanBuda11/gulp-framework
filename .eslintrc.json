@@ -26,6 +26,7 @@
         "singleQuote": true
       }
     ],
-    "no-console": "off"
+    "no-console": "off",
+    "allowForLoopAfterthoughts": "true"
   }
 }
