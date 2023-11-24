@@ -1,6 +1,6 @@
 {
   "name": "gulp-framework",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "type": "module",
   "description": "Simple Gulp Framework for Simple Frontend Projects",
   "main": "index.js",

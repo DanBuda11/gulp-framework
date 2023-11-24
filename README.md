@@ -21,6 +21,12 @@ A simple Gulp framework with a development server and production script for fron
 
 ## Version Information
 
+### 4.1.0
+
+- Add support for CSS Nesting
+- Replace `purifycss` with `purgecss`
+- Remove unnecessary normalize task from `gulpfile.js`
+
 ### 4.0.1
 
 - Minor dependency updates
