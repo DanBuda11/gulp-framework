@@ -10,9 +10,11 @@ import htmlmin from 'gulp-htmlmin';
 // Minimize & optimize CSS
 import cleanCSS from 'gulp-clean-css';
 // Remove unused/dead CSS
-import purifyCSS from 'gulp-purifycss';
+import purgecss from 'gulp-purgecss';
 // PostCSS (using autoprefixer plugin)
 import postCSS from 'gulp-postcss';
+// PostCSS Nesting as a postCSS plugin
+import postcssNesting from 'postcss-nesting';
 // Autoprefixer as a postCSS plugin
 import autoprefixer from 'autoprefixer';
 // Babel for Gulp
@@ -44,7 +46,6 @@ const paths = {
   prodCSS: 'dist/css',
   prodJS: 'dist/js',
   prodImages: 'dist/images',
-  normalize: 'src/css/normalize.css',
 };
 
 // ************************* Production Tasks *************************
@@ -65,20 +66,19 @@ function buildFavicon() {
 
 // Minimize CSS files and add prefixes if needed
 export function buildCSS() {
-  return src(paths.devCSS)
-    .pipe(purifyCSS([paths.devHTML, paths.devJS]))
-    .pipe(cleanCSS())
-    .pipe(postCSS([autoprefixer()]))
-    .pipe(size({ showFiles: true }))
-    .pipe(dest(paths.prodCSS));
-}
-
-// Move normalize.css from src/css to dist/css
-function buildNormalize() {
-  return src(paths.normalize)
-    .pipe(cleanCSS())
-    .pipe(size({ showFiles: true }))
-    .pipe(dest(paths.prodCSS));
+  return (
+    src(paths.devCSS)
+      .pipe(postCSS([postcssNesting(), autoprefixer()]))
+      .pipe(
+        purgecss({
+          content: [paths.devHTML, paths.devJS],
+        }),
+      )
+      // .pipe(purifyCSS([paths.devHTML, paths.devJS]))
+      .pipe(cleanCSS())
+      .pipe(size({ showFiles: true }))
+      .pipe(dest(paths.prodCSS))
+  );
 }
 
 // Minimize JavaScript files
@@ -127,12 +127,5 @@ export function clean() {
 // Run production build
 export const build = series(
   clean,
-  parallel(
-    buildHTML,
-    buildFavicon,
-    buildCSS,
-    buildNormalize,
-    buildJS,
-    buildImages,
-  ),
+  parallel(buildHTML, buildFavicon, buildCSS, buildJS, buildImages),
 );
