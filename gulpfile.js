@@ -11,7 +11,7 @@ import htmlmin from 'gulp-htmlmin';
 import cleanCSS from 'gulp-clean-css';
 // Remove unused/dead CSS
 import purifyCSS from 'gulp-purifycss';
-// PostCSS (using autoprefixer plugin in postcss.config.cjs)
+// PostCSS (using autoprefixer plugin)
 import postCSS from 'gulp-postcss';
 // Autoprefixer as a postCSS plugin
 import autoprefixer from 'autoprefixer';

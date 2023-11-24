@@ -21,6 +21,11 @@ A simple Gulp framework with a development server and production script for fron
 
 ## Version Information
 
+### 4.0.1
+
+- Minor dependency updates
+- Comment clean up
+
 ### 4.0.0
 
 - Changed all packages used in `gulpfile.js` from `require()` to ESM `import` syntax

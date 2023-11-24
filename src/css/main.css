@@ -4,9 +4,11 @@ body {
   padding: 2em;
   font-family: sans-serif;
 }
+
 body img {
   max-width: 200px;
 }
+
 body p {
   max-width: 600px;
   margin: 0 auto;
