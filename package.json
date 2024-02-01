@@ -2,6 +2,9 @@
   "name": "gulp-framework",
   "version": "4.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=18.19.0"
+  },
   "description": "Simple Gulp Framework for Simple Frontend Projects",
   "main": "index.js",
   "scripts": {},
