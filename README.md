@@ -21,6 +21,10 @@ A simple Gulp framework with a development server and production script for fron
 
 ## Version Information
 
+### 4.1.2
+
+- Minor dependency updates
+
 ### 4.1.1
 
 - Minor dependency updates
