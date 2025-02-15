@@ -1,9 +1,9 @@
 {
   "name": "gulp-framework",
-  "version": "4.1.4",
+  "version": "4.1.5",
   "type": "module",
   "engines": {
-    "node": ">=18.20.3"
+    "node": ">=20.18.3"
   },
   "description": "Simple Gulp Framework for Simple Frontend Projects",
   "main": "index.js",
